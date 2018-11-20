@@ -119,6 +119,16 @@ public class TextRenderInfo {
      */
     public PdfString getPdfString() { return string; }
 
+    public Matrix getTextToUserSpaceTransformMatrix()
+    {
+        return textToUserSpaceTransformMatrix;
+    }
+
+    public GraphicsState getGs()
+    {
+        return gs;
+    }
+
 	/**
 	 * Checks if the text belongs to a marked content sequence
 	 * with a given mcid.
