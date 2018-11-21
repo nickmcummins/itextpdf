@@ -103,4 +103,9 @@ public class PdfReaderContentParser {
     public <E extends RenderListener> E processContent(int pageNumber, E renderListener) throws IOException{
         return processContent(pageNumber, renderListener, new HashMap<String, ContentOperator>());
     }
+
+    public PdfReader getReader()
+    {
+        return reader;
+    }
 }
