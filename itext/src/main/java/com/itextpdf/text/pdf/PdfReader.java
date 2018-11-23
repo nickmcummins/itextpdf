@@ -159,6 +159,8 @@ public class PdfReader implements PdfViewerPreferences {
 	private final PdfViewerPreferencesImp viewerPreferences = new PdfViewerPreferencesImp();
     private boolean encryptionError;
 
+    private String filename;
+
     /**
      * Holds value of property appendable.
      */
@@ -181,6 +183,10 @@ public class PdfReader implements PdfViewerPreferences {
      * @param closeSourceOnConstructorError if true, the byteSource will be closed if there is an error during construction of this reader
      */
     private PdfReader(RandomAccessSource byteSource, boolean partialRead, byte ownerPassword[], Certificate certificate, Key certificateKey, String certificateKeyProvider, ExternalDecryptionProcess externalDecryptionProcess, boolean closeSourceOnConstructorError) throws IOException {
+        this(byteSource, partialRead, ownerPassword, certificate, certificateKey, certificateKeyProvider, externalDecryptionProcess, closeSourceOnConstructorError, null);
+    }
+
+    private PdfReader(RandomAccessSource byteSource, boolean partialRead, byte ownerPassword[], Certificate certificate, Key certificateKey, String certificateKeyProvider, ExternalDecryptionProcess externalDecryptionProcess, boolean closeSourceOnConstructorError, String filename) throws IOException {
         this.certificate = certificate;
         this.certificateKey = certificateKey;
         this.certificateKeyProvider = certificateKeyProvider;
@@ -188,27 +194,28 @@ public class PdfReader implements PdfViewerPreferences {
         this.password = ownerPassword;
         this.partial = partialRead;
         try{
-        
-	        tokens = getOffsetTokeniser(byteSource);
-	        
-	        if (partialRead){
-	        	readPdfPartial();
-	        } else {
-	        	readPdf();
-	        }
+
+            tokens = getOffsetTokeniser(byteSource);
+
+            if (partialRead){
+                readPdfPartial();
+            } else {
+                readPdf();
+            }
         } catch (IOException e){
-        	if (closeSourceOnConstructorError)
-        		byteSource.close();
-        	throw e;
+            if (closeSourceOnConstructorError)
+                byteSource.close();
+            throw e;
         }
-		getCounter().read(fileLength);
+        getCounter().read(fileLength);
+        this.filename = filename;
     }
-    
-    /**
-     * Reads and parses a PDF document.
-     * @param filename the file name of the document
-     * @throws IOException on error
-     */
+
+        /**
+         * Reads and parses a PDF document.
+         * @param filename the file name of the document
+         * @throws IOException on error
+         */
     public PdfReader(final String filename) throws IOException {
         this(filename, (byte[]) null);
     }
@@ -243,7 +250,8 @@ public class PdfReader implements PdfViewerPreferences {
     			null,
     			null,
                 null,
-    			true	
+    			true,
+                filename
         );
     }
 
@@ -2874,6 +2882,11 @@ public class PdfReader implements PdfViewerPreferences {
     PdfEncryption getDecrypt() {
         return decrypt;
     }
+
+    public String getFilename() {
+        return filename;
+    }
+
 
     static boolean equalsn(final byte a1[], final byte a2[]) {
         int length = a2.length;
