@@ -179,7 +179,7 @@ public class TextRenderInfo {
 	/**
      * @return the unscaled (i.e. in Text space) width of the text
      */
-    float getUnscaledWidth(){
+    public float getUnscaledWidth(){
         if (unscaledWidth == null)
             unscaledWidth = Float.valueOf(getPdfStringWidth(string, false));
         return unscaledWidth;
